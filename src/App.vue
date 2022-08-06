@@ -2,54 +2,72 @@
 import { ref } from 'vue';
 
 let search_input = ref('')
-let tableData = ref(
-  [
+let tableData = ref([
+  {
+      id: "1",
+      name: 'July',
+      age: 'boy',
+      sex: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
     {
-    date: '2016-05-03',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
-  ]
-)
+      id: "2",
+      name: 'Ana',
+      age: 'girl',
+      sex: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      id: "3",
+      name: 'Seven',
+      age: 'man',
+      sex: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+    {
+      id: "4",
+      name: 'Ming',
+      age: 'woman',
+      sex: 'California',
+      city: 'Los Angeles',
+      address: 'No. 189, Grove St, Los Angeles',
+    },
+])
 let multipleSelection = ref([])
+let dialogFormVisible = ref(false)
+let formLabelWidth = ref(50)
+let tableForm = ref({
+  name: '',
+  age: '',
+  sex: '',
+  city: '',
+  address: ''
+})
+let dialogType = ref('add')
 
-const handleClickBtn = () =>{
-  console.log("click")
-} 
 
 const handleSelectionChange = (val)=>{
   multipleSelection.value = val
+}
+
+const handleAdd = () =>{
+  dialogFormVisible.value = true
+}
+
+const dialogConfirm = () =>{
+  dialogFormVisible.value = false
+  tableData.value.push({
+    id: (tableData.value.length + 1).toString(),
+    ...tableForm.value
+  })
+}
+const tableRowDel = ({id}) => {
+  console.log(id)
+  let rowIndex = tableData.value.findIndex(item=>item.id === id)
+  tableData.value.splice(rowIndex, 1)
 }
 
 </script>
@@ -62,8 +80,8 @@ const handleSelectionChange = (val)=>{
     </div>
     <!-- 搜索区域 -->
     <div class="demo_search">
-      <el-input v-model="search_input" placeholder="请输入姓名搜索" />
-      <el-button type="primary">增加</el-button>
+      <el-input class="search_input" v-model="search_input" placeholder="请输入姓名搜索" />
+      <el-button type="primary" @click="handleAdd">增加</el-button>
     </div>
     <div class="demo_table">
       <el-table 
@@ -73,21 +91,47 @@ const handleSelectionChange = (val)=>{
       @selection-change="handleSelectionChange" 
       border>
         <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="date" label="Date" width="150" />
-        <el-table-column prop="name" label="Name" width="120" />
-        <el-table-column prop="state" label="State" width="120" />
-        <el-table-column prop="city" label="City" width="120" />
-        <el-table-column prop="address" label="Address" width="600" />
-        <el-table-column prop="zip" label="Zip" width="120" />
-        <el-table-column fixed="right" label="Operations" width="120">
-          <template #default>
-            <el-button link type="primary" size="small" @click="handleClickBtn"
-              >Detail</el-button
-            >
-            <el-button link type="primary" size="small">Edit</el-button>
+        <el-table-column prop="name" label="姓名" width="120" />
+        <el-table-column prop="age" label="年龄" width="120" />
+        <el-table-column prop="sex" label="性别" width="120" />
+        <el-table-column prop="city" label="城市" width="120" />
+        <el-table-column prop="address" label="地址" width="600" />
+        <el-table-column fixed="right" label="操作" width="120">
+          <template #default="scope">
+            <el-button link type="primary" size="small" @click="tableRowDel(scope.row)" style="color:#F56C6C">删除</el-button>
+            <el-button link type="primary" size="small">编辑</el-button>
           </template>
         </el-table-column>
-  </el-table>
+      </el-table>
+
+      <!-- 新增弹窗 -->
+      <el-dialog v-model="dialogFormVisible" :title="dialogType === 'add' ? '新增' : '编辑'">
+        <el-form :model="tableForm">
+          <el-form-item label="姓名" :label-width="formLabelWidth">
+            <el-input v-model="tableForm.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="年龄" :label-width="formLabelWidth">
+            <el-input v-model="tableForm.age" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="性别" :label-width="formLabelWidth">
+            <el-input v-model="tableForm.sex" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="城市" :label-width="formLabelWidth">
+            <el-input v-model="tableForm.city" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="地址" :label-width="formLabelWidth">
+            <el-input v-model="tableForm.address" autocomplete="off" />
+          </el-form-item>
+         </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="dialogConfirm"
+              >Confirm</el-button
+            >
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
   
@@ -97,11 +141,7 @@ const handleSelectionChange = (val)=>{
 <style scoped>
 .table_box{
   width: 800px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
+  margin: 20px auto;
 }
 .demo_title{
   text-align: center;
@@ -111,7 +151,10 @@ const handleSelectionChange = (val)=>{
   justify-content: space-between;
   margin-bottom: 20px;
 }
-.el-input{
+.search_input{
   width: 200px;
+}
+.dialog_box{
+  width: 300px;
 }
 </style>

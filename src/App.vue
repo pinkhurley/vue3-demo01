@@ -64,11 +64,29 @@ const handleAdd = () =>{
 
 const dialogConfirm = () =>{
   dialogFormVisible.value = false
-  tableData.value.push({
+
+  // 判断是新增还是编辑
+  if(dialogType === 'add'){
+    tableData.value.push({
     id: (tableData.value.length + 1).toString(),
     ...tableForm.value
   })
+  }else{
+    let index = tableData.value.findIndex(item => item.id === tableForm.value.id)
+    console.log(index)
+    tableData.value[index] = tableForm.value
+  }
+  
 }
+
+const dialogEdit =(row) =>{
+  console.log(row)
+  dialogFormVisible.value = true
+  dialogType.value = 'edit'
+  tableForm.value = {...row}
+
+}
+
 const tableRowDel = ({id}) => {
   // console.log(id)
   let rowIndex = tableData.value.findIndex(item=>item.id === id)
@@ -94,7 +112,7 @@ const tableDelChoose = ()=>{
       <el-input class="search_input" v-model="search_input" placeholder="请输入姓名搜索" />
       <div class="btn_list">
         <el-button type="primary" @click="handleAdd">增加</el-button>
-        <el-button type="danger" @click="tableDelChoose">删除选中</el-button>
+        <el-button type="danger" @click="tableDelChoose" v-if="multipleSelection.length > 0">删除选中</el-button>
       </div>
     </div>
     <div class="demo_table">
@@ -113,7 +131,7 @@ const tableDelChoose = ()=>{
         <el-table-column fixed="right" label="操作" width="120">
           <template #default="scope">
             <el-button link type="primary" size="small" @click="tableRowDel(scope.row)" style="color:#F56C6C">删除</el-button>
-            <el-button link type="primary" size="small">编辑</el-button>
+            <el-button link type="primary" size="small" @click="dialogEdit(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>

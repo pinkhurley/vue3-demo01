@@ -50,7 +50,12 @@ let dialogType = ref('add')
 
 
 const handleSelectionChange = (val)=>{
-  multipleSelection.value = val
+  // multipleSelection.value = val
+  multipleSelection.value = []
+  val.forEach(item => {
+    multipleSelection.value.push(item.id)
+  });
+  console.log(multipleSelection.value)
 }
 
 const handleAdd = () =>{
@@ -65,9 +70,15 @@ const dialogConfirm = () =>{
   })
 }
 const tableRowDel = ({id}) => {
-  console.log(id)
+  // console.log(id)
   let rowIndex = tableData.value.findIndex(item=>item.id === id)
   tableData.value.splice(rowIndex, 1)
+}
+
+const tableDelChoose = ()=>{
+  multipleSelection.value.forEach(id=>{
+    tableRowDel({id})
+  })
 }
 
 </script>
@@ -81,7 +92,10 @@ const tableRowDel = ({id}) => {
     <!-- 搜索区域 -->
     <div class="demo_search">
       <el-input class="search_input" v-model="search_input" placeholder="请输入姓名搜索" />
-      <el-button type="primary" @click="handleAdd">增加</el-button>
+      <div class="btn_list">
+        <el-button type="primary" @click="handleAdd">增加</el-button>
+        <el-button type="danger" @click="tableDelChoose">删除选中</el-button>
+      </div>
     </div>
     <div class="demo_table">
       <el-table 

@@ -36,6 +36,9 @@ let tableData = ref([
       address: 'No. 189, Grove St, Los Angeles',
     },
 ])
+
+let tableDataCopy = ref([])
+tableDataCopy.value = tableData.value
 let multipleSelection = ref([])
 let dialogFormVisible = ref(false)
 let formLabelWidth = ref(50)
@@ -47,6 +50,7 @@ let tableForm = ref({
   address: ''
 })
 let dialogType = ref('add')
+let queryInput = ref("")
 
 
 const handleSelectionChange = (val)=>{
@@ -73,14 +77,13 @@ const dialogConfirm = () =>{
   })
   }else{
     let index = tableData.value.findIndex(item => item.id === tableForm.value.id)
-    console.log(index)
     tableData.value[index] = tableForm.value
   }
   
 }
 
 const dialogEdit =(row) =>{
-  console.log(row)
+  // console.log(row)
   dialogFormVisible.value = true
   dialogType.value = 'edit'
   tableForm.value = {...row}
@@ -99,6 +102,17 @@ const tableDelChoose = ()=>{
   })
 }
 
+const handleQueryName = (val) =>{
+  if (val.length > 0){
+    tableData.value = tableData.value.filter(item => (item.name).toLowerCase().match(val.toLowerCase()))
+  }else{
+    // console.log('empty')
+    tableData.value = tableDataCopy.value
+    
+  }
+  
+}
+
 </script>
 
 <template>
@@ -109,7 +123,7 @@ const tableDelChoose = ()=>{
     </div>
     <!-- 搜索区域 -->
     <div class="demo_search">
-      <el-input class="search_input" v-model="search_input" placeholder="请输入姓名搜索" />
+      <el-input class="search_input" v-model="queryInput" placeholder="请输入姓名搜索" @input="handleQueryName"/>
       <div class="btn_list">
         <el-button type="primary" @click="handleAdd">增加</el-button>
         <el-button type="danger" @click="tableDelChoose" v-if="multipleSelection.length > 0">删除选中</el-button>

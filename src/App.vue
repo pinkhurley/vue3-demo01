@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 
-let search_input = ref('')
 let tableData = ref([
   {
       id: "1",

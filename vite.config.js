@@ -5,5 +5,8 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   // 打包路径
-  base: './' 
+  base: './' ,
+  build: {
+    chunkSizeWarningLimit: 1600,
+  }
 })
